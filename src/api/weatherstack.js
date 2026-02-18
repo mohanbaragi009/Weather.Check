@@ -1,20 +1,14 @@
-const BASE = 'https://api.weatherstack.com'
-
-function key() {
-  const k = import.meta?.env?.VITE_WEATHERSTACK_KEY
-  if (!k) throw new Error('Missing VITE_WEATHERSTACK_KEY')
-  return k
-}
+const BASE = '/api/weatherstack'
 
 async function call(path, params) {
-  const usp = new URLSearchParams({ access_key: key(), ...params })
+  const usp = new URLSearchParams({ ...params })
   const url = `${BASE}${path}?${usp.toString()}`
   const res = await fetch(url)
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const data = await res.json()
   if (data?.error) {
-    const msg = data.error?.info || data.error?.type || 'API error'
-    const code = data.error?.code
+    const msg = data.error?.info || data.error?.type || data.error || 'API error'
+    const code = data.error?.code || data.code
     const err = new Error(`${msg}${code ? ` (${code})` : ''}`)
     err.code = code
     throw err
