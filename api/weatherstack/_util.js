@@ -1,11 +1,11 @@
 const BASE = 'https://api.weatherstack.com'
 
 export async function forward(res, endpoint, params) {
-  const key = process.env.WEATHERSTACK_KEY
+  const key = process.env.WEATHERSTACK_KEY || process.env.VITE_WEATHERSTACK_KEY
   if (!key) {
     res.statusCode = 500
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ error: 'Missing WEATHERSTACK_KEY on server' }))
+    res.end(JSON.stringify({ error: 'Missing WEATHERSTACK_KEY or VITE_WEATHERSTACK_KEY on server' }))
     return
   }
   const usp = new URLSearchParams({ ...params, access_key: key })
